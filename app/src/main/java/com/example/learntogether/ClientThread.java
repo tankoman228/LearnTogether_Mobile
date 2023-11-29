@@ -75,7 +75,7 @@ public abstract class ClientThread extends Thread {
                 @Override
                 public void completed(Integer result, Void attachment) {
                     if (result == -1) {
-                        close_all();
+                        close_all();//
                     }
 
                     buffer.flip();
