@@ -1,5 +1,6 @@
 package com.example.learntogether;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -7,12 +8,21 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.nio.charset.Charset;
+import java.security.KeyStore;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
 
 
 public abstract class ClientThread extends Thread {
@@ -26,6 +36,7 @@ public abstract class ClientThread extends Thread {
     private Charset charset;
     private static final int BUFFER_SIZE = 2048;
 
+    public static Context context;
 
     @Override
     public void run() {
@@ -35,18 +46,28 @@ public abstract class ClientThread extends Thread {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void real_run() {
         try {
-            /*
-            socket = new Socket("192.168.3.73", 9540); // Replace with your server IP and port
-            outputWriter = new PrintWriter(socket.getOutputStream(), true);
-            inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             */
 
             socket = AsynchronousSocketChannel.open();
             socket.connect(new InetSocketAddress("192.168.3.73", 9540)).get();
 
+            InputStream inputStream = context.getResources().openRawResource(R.raw.client_keystore);
+            KeyStore clientKeyStore = KeyStore.getInstance("PKCS12");
+            clientKeyStore.load(inputStream, "SCP-055".toCharArray());
+
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(clientKeyStore, "password".toCharArray());
+
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.1");
+            sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+
+            SSLEngine sslEngine = sslContext.createSSLEngine();
+            sslEngine.setUseClientMode(true);
+            sslEngine.beginHandshake();
+
+            //sslEngine.getSession().getPeerCertificates();
+
             buffer = ByteBuffer.allocate(BUFFER_SIZE);
             charset = Charset.forName("UTF-8");
-
 
             Log.d("API","socket created");
 
@@ -74,21 +95,6 @@ public abstract class ClientThread extends Thread {
                 }
 
             });
-/*
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        String message;
-                        while ((message = inputReader.readLine()) != null) {
-                            Log.d("API","onGet from server");
-                            onGet_message_from_server(message);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();*/
-
         } catch (Exception e) {
             e.printStackTrace();
             close_all();
@@ -97,18 +103,6 @@ public abstract class ClientThread extends Thread {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void send_message(String msg) {
-        /*
-        if (msg != null && !msg.isEmpty()) {
-        try {
-                outputWriter.println(msg);
-            } catch (Exception e) {
-            e.printStackTrace();
-        }
-        }
-
-         */
-
-
         if (msg != null && !msg.isEmpty()) {
             new Sender().execute(msg);
         }
