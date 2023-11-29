@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         et = findViewById(R.id.editTextText);
         btn = findViewById(R.id.button);
 
-        ClientThread.context = this;
+        //ClientThread.context = this;
 
         clientThread = new ClientThread() {
             @Override
