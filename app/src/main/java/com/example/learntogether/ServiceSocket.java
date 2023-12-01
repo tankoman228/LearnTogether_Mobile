@@ -6,21 +6,36 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class ServiceSocket extends Service {
 
+    //IP address
     public static String hostname = "192.168.3.73";
+
+    //Server port
     public static int Port = 9540;
+
+    //Register token we are trying to use
     public static String RegisterToken = "";
 
+
+    //The only service we uss
     public static ServiceSocket THIS = null;
+
+    //To send messages from service to current activity
     public static API_Connectable Activity = null;
 
+    //Notification for foreground service
     private static final int NOTIFICATION_ID = 300;
     private static final String CHANNEL_ID = "TimeManager_channel";
+
+
+    //Object managing connection and sending/getting data from socket
     private static ClientThread clientThread;
 
 
@@ -52,21 +67,16 @@ public class ServiceSocket extends Service {
         return START_STICKY;
     }
 
-
-    public static boolean needReconnectInCaseOfError = false;
-
-    private static int wait_time = 0;
-    public static void restart_process() {
+    //Opens connection or restarts the socket process
+    public static void restart_process(boolean needReconnectInCaseOfError) {
 
         if (clientThread != null) {
             clientThread.close_all();
             clientThread.stop();
         }
-        else {
-            wait_time = 0;
-        }
 
         new Thread(() -> {
+            int wait_time = 0;
             do {
                 try {
                     Thread.currentThread().wait(wait_time);
@@ -84,7 +94,9 @@ public class ServiceSocket extends Service {
         });
     }
 
-    public static boolean try_connect() {
+
+    //Returns false if can't open connection
+    private static boolean try_connect() {
         try {
             clientThread = new ClientThread() {
                 @Override
@@ -102,16 +114,18 @@ public class ServiceSocket extends Service {
         }
     }
 
+
+    //Sends message to serer using socket object
     public static void send_message(String json) {
         if (clientThread == null) return;
         clientThread.send_message(json);
     }
 
-
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new Binder();
     }
 
     @Override
