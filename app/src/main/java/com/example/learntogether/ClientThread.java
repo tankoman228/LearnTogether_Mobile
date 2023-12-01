@@ -42,7 +42,7 @@ public abstract class ClientThread extends Thread {
              */
 
             socket = AsynchronousSocketChannel.open();
-            socket.connect(new InetSocketAddress("192.168.3.73", 9540)).get();
+            socket.connect(new InetSocketAddress(ServiceSocket.hostname, ServiceSocket.Port)).get();
 
             buffer = ByteBuffer.allocate(BUFFER_SIZE);
             charset = Charset.forName("UTF-8");

@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">LearnTogether</string>
+    <string name="registration">Регистрация</string>
+    <string name="ip_server">IP Адрес сервера</string>
+    <string name="register_token">Токен регистрации</string>
+    <string name="to_register">Зарегистрироваться</string>
+    <string name="learn_together">Learn Together</string>
+    <string name="sign_in">Вход</string>
+    <string name="username">Username (уникальное)</string>
+    <string name="user_title">Отображаемое имя</string>
+    <string name="recovery_contact">Контакт для восстановления</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="enter_to_system">Войти в систему</string>
 </resources>
