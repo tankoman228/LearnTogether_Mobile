@@ -124,6 +124,10 @@ public abstract class ClientThread extends Thread {
                 String res = "";
                 try {
                     for (String param : params) {
+
+                        if (param.equals(""))
+                            param = " ";
+
                         byte[] bytes = param.getBytes(charset);
                         ByteBuffer buffer = ByteBuffer.wrap(bytes);
                         socket.write(buffer).get();

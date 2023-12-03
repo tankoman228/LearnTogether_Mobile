@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EdgeEffect;
@@ -32,6 +34,11 @@ public class MainActivity extends AppCompatActivity implements API_Connectable {
         if (ServiceSocket.THIS == null) {
             Intent intent = new Intent(this, ServiceSocket.class);
             startForegroundService(intent);
+        }
+
+        CurrentAccount.TryLoadAccountInfo(this);
+        if (ServiceSocket.try_login()) {
+            Log.d("API", "AUTO LOGIN SUCCESS");
         }
     }
 

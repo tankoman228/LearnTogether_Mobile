@@ -25,7 +25,7 @@ public class Login extends AppCompatActivity implements API_Connectable {
         CurrentAccount.TryLoadAccountInfo(this);
 
         etIP.setText(CurrentAccount.server);
-        etLogin.setText(CurrentAccount.password);
+        etLogin.setText(CurrentAccount.username);
 
         findViewById(R.id.btnEnter).setOnClickListener(l -> {
             CurrentAccount.server = etIP.getText().toString();

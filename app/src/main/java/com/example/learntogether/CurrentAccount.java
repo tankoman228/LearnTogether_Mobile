@@ -35,11 +35,12 @@ public class CurrentAccount {
     }
 
     public static void SaveAccountInfo(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("Account", Context.MODE_PRIVATE);
-        prefs.edit().putString("username", username);
-        prefs.edit().putString("password", password);
-        prefs.edit().putString("server", ServiceSocket.hostname + ":" + String.valueOf(ServiceSocket.Port));
-        prefs.edit().apply();
+        SharedPreferences prefss = context.getSharedPreferences("Account", Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefs = prefss.edit();
+        prefs.putString("username", username);
+        prefs.putString("password", password);
+        prefs.putString("server", ServiceSocket.hostname + ":" + String.valueOf(ServiceSocket.Port));
+        prefs.apply();
     }
 
 
