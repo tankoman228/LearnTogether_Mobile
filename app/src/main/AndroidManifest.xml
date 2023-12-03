@@ -17,10 +17,6 @@
         android:theme="@style/Theme.LearnTogether"
         tools:targetApi="31">
         <activity
-            android:name=".InfoNewsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_info_news" />
-        <activity
             android:name=".Login"
             android:exported="false" />
         <activity

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -142,9 +143,11 @@ public class ServiceSocket extends Service {
             await_answer = true;
 
             if (await_success()) {
-                Intent i = new Intent((Context)(Activity), InfoNewsActivity.class);
-                ((Context)(Activity)).startActivity(i);
+                //Intent i = new Intent((Context)(Activity), InfoNewsActivity.class);
+                //((Context)(Activity)).startActivity(i);
+                return true;
             }
+            Toast.makeText((Activity)(Activity), "wrong user or password", Toast.LENGTH_SHORT).show();
         }
         return false;
     }

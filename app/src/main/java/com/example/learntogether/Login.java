@@ -3,6 +3,7 @@ package com.example.learntogether;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,7 +33,9 @@ public class Login extends AppCompatActivity implements API_Connectable {
             CurrentAccount.username = etLogin.getText().toString();
 
             CurrentAccount.SaveAccountInfo(this);
-            ServiceSocket.try_login();
+            if (ServiceSocket.try_login()) {
+                Log.d("API", "Login SUCCESS");
+            }
         });
     }
 
