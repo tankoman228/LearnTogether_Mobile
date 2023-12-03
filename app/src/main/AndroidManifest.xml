@@ -17,6 +17,10 @@
         android:theme="@style/Theme.LearnTogether"
         tools:targetApi="31">
         <activity
+            android:name=".InfoNewsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_info_news" />
+        <activity
             android:name=".Login"
             android:exported="false" />
         <activity
@@ -29,7 +33,8 @@
         <service
             android:name=".ServiceSocket"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:foregroundServiceType="dataSync"/>
 
         <activity
             android:name=".MainActivity"

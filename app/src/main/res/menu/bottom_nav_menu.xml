@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuNews"
+        android:icon="@drawable/news"
+        android:title=""
+        />
+    <item
+        android:id="@+id/menuFiles"
+        android:icon="@drawable/files"
+        android:title=""/>
+    <item
+        android:id="@+id/menuMeetings"
+        android:icon="@drawable/meetings"
+        android:title=""/>
+    <item
+        android:id="@+id/menuDiscuss"
+        android:icon="@drawable/discuss"
+        android:title=""/>
+    <item
+        android:id="@+id/menuPeople"
+        android:icon="@drawable/people"
+        android:title=""/>
+</menu>

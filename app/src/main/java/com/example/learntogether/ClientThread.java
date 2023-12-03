@@ -32,15 +32,8 @@ public abstract class ClientThread extends Thread {
         new Getter().execute();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void real_run() {
         try {
-            /*
-            socket = new Socket("192.168.3.73", 9540); // Replace with your server IP and port
-            outputWriter = new PrintWriter(socket.getOutputStream(), true);
-            inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             */
-
             socket = AsynchronousSocketChannel.open();
             socket.connect(new InetSocketAddress(ServiceSocket.hostname, ServiceSocket.Port)).get();
 
@@ -59,6 +52,9 @@ public abstract class ClientThread extends Thread {
 
                     buffer.flip();
                     String message = charset.decode(buffer).toString();
+                    if (message == null)
+                        message = "";
+
                     buffer.clear();
 
                     Log.d("API", "onGet from server");
@@ -72,22 +68,7 @@ public abstract class ClientThread extends Thread {
                     exc.printStackTrace();
                     close_all();
                 }
-
             });
-/*
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        String message;
-                        while ((message = inputReader.readLine()) != null) {
-                            Log.d("API","onGet from server");
-                            onGet_message_from_server(message);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,31 +76,21 @@ public abstract class ClientThread extends Thread {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void send_message(String msg) {
-        /*
-        if (msg != null && !msg.isEmpty()) {
-        try {
-                outputWriter.println(msg);
-            } catch (Exception e) {
-            e.printStackTrace();
-        }
-        }
-
-         */
-
-
         if (msg != null && !msg.isEmpty()) {
             new Sender().execute(msg);
         }
     }
 
+    public void send_messages(String... msg) {
+         new Sender().execute(msg);
+    }
+
     public void close_all() {
         try {
+            Log.d("API", "Stopping ClientThread");
             if (socket != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    socket.close();
-                }
+                socket.close();
             }
             if (outputWriter != null) {
                 outputWriter.close();
@@ -127,6 +98,7 @@ public abstract class ClientThread extends Thread {
             if (inputReader != null) {
                 inputReader.close();
             }
+            this.stop();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -139,22 +111,25 @@ public abstract class ClientThread extends Thread {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                real_run();
-            }
+            real_run();
             return null;
         }
     }
 
-    private class Sender extends AsyncTask<String, Void, Void> {
+    private class Sender extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected String doInBackground(String... params) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                String res = "";
                 try {
-                    byte[] bytes = params[0].getBytes(charset);
-                    ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                    socket.write(buffer).get();
+                    for (String param : params) {
+                        byte[] bytes = param.getBytes(charset);
+                        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+                        socket.write(buffer).get();
+                        sleep(100);
+                    }
+                    return res;
                 } catch(Exception e) {
                     e.printStackTrace();
                 }

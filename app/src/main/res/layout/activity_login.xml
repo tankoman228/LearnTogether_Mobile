@@ -7,7 +7,7 @@
     android:background="@color/black2">
 
     <Button
-        android:id="@+id/btnRegisterProfile"
+        android:id="@+id/btnEnter"
         android:layout_width="0dp"
         android:layout_height="70sp"
         android:layout_marginBottom="32dp"

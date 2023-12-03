@@ -11,11 +11,12 @@ import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements API_Connectable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
         findViewById(R.id.btnGoEnter).setOnClickListener(l -> {
             Intent i = new Intent(this, Login.class);
@@ -25,10 +26,22 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, Register.class);
             startActivity(i);
         });
+
+        ServiceSocket.Activity = this;
+
+        if (ServiceSocket.THIS == null) {
+            Intent intent = new Intent(this, ServiceSocket.class);
+            startForegroundService(intent);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onResponse(String get) {
+
     }
 }
