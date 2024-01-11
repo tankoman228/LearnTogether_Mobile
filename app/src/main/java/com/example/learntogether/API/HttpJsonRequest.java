@@ -1,5 +1,6 @@
 package com.example.learntogether.API;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -20,24 +21,42 @@ public class HttpJsonRequest {
     private static String serverURL;
 
 
+    private static volatile boolean Success = false;
     public static boolean try_init(String serverURL) {
 
         HttpJsonRequest.serverURL = serverURL + "/";
 
-        try {
-            String ans = JsonRequest("test/Test", "{}", "GET");
-            if (ans != null) {
-                return ans.contains("Success");
+        AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    String ans = JsonRequest("test/Test", "{}", "POST");
+                    if (ans != null) {
+                        return ans;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "";
             }
+        };
+
+        asyncTask.execute();
+
+        try {
+            String response = asyncTask.get(); // Блокирует текущий поток и ждет завершения AsyncTask
+            return response.contains("Success");
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
-    public static String JsonRequest(String urlString, String json, String method) throws IOException {
+    private static String JsonRequest(String urlString, String json, String method) throws IOException {
 
         URL url = new URL("http://"+ serverURL + urlString);
+        Log.d("API", "URL: " + url.toString());
+
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod(method);
@@ -64,22 +83,32 @@ public class HttpJsonRequest {
 
         conn.disconnect();
 
-        Log.d("API", responseBuilder.toString());
-        return responseBuilder.toString();
+        String rs = responseBuilder.toString();
+        Log.d("API", rs);
+        return rs;
     }
 
     public static void JsonRequestAsync(String urlString, String json, String method, Callback callback) {
-        new Thread(() -> {
-            try {
-                String response = JsonRequest(urlString, json, method);
+        new AsyncTask<Void, Void, String>() {
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    return JsonRequest(urlString, json, method);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String response) {
                 if (response != null) {
                     callback.onSuccess(response);
                 } else {
                     callback.onError(new Exception("Response is null"));
                 }
-            } catch (Exception e) {
-                callback.onError(e);
             }
-        }).start();
+        }.execute();
     }
+
 }
