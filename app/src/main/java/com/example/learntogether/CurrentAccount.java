@@ -18,13 +18,7 @@ public class CurrentAccount {
             server = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("server", null);
 
             if (username != null && password != null && server != null) {
-
-                try {
-                    Connect(context);
-                }
-                catch (Exception ee) {
-                    ee.printStackTrace();
-                }
+                //...
                 return true;
             }
         }
@@ -39,17 +33,7 @@ public class CurrentAccount {
         SharedPreferences.Editor prefs = prefss.edit();
         prefs.putString("username", username);
         prefs.putString("password", password);
-        prefs.putString("server", ServiceSocket.hostname + ":" + String.valueOf(ServiceSocket.Port));
+        prefs.putString("server", server);
         prefs.apply();
-    }
-
-
-    private static void Connect(Context context) {
-
-        ServiceSocket.hostname = server.split(":")[0];
-        ServiceSocket.Port = Integer.valueOf(server.split(":")[1]);
-
-        Intent i = new Intent(context, ServiceSocket.class);
-        context.startForegroundService(i);
     }
 }

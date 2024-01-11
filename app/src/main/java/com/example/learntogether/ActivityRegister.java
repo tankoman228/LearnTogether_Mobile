@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class Register extends AppCompatActivity {
+public class ActivityRegister extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +21,7 @@ public class Register extends AppCompatActivity {
             try {
                 String txt = et.getText().toString();
 
-                ServiceSocket.hostname = txt.split(":")[0];
-                ServiceSocket.Port = Integer.valueOf( txt.split(":")[1]);
-                ServiceSocket.RegisterToken = et2.getText().toString();
-
-                Intent i = new Intent(this, RegisterMenu.class);
+                Intent i = new Intent(this, ActivityRegisterMenu.class);
                 startActivity(i);
             }
             catch (Exception e) {
