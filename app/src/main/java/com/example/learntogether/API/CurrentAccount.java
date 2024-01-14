@@ -1,4 +1,4 @@
-package com.example.learntogether;
+package com.example.learntogether.API;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 public class CurrentAccount {
 
     public static String username, password, server;
+    public static String AccessToken;
 
 
     public static boolean TryLoadAccountInfo(Context context) {
