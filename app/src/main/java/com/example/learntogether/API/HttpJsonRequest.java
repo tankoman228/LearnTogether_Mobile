@@ -35,6 +35,7 @@ public class HttpJsonRequest {
                 try {
                     JSONObject ans = JsonRequest("test/Test", new JSONObject(), "POST");
                     if (ans != null) {
+                        Log.d("API", String.valueOf(ans));
                         return ans;
                     }
                 } catch (Exception e) {

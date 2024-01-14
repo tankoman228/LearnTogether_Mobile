@@ -2,6 +2,7 @@ package com.example.learntogether;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -32,13 +33,13 @@ public class ActivityLogin extends AppCompatActivity {
             new Thread(() -> {
                 Toast.makeText(this, "Connecting", Toast.LENGTH_SHORT).show();
 
-                if (HttpJsonRequest.try_init("192.168.3.73:8000")) {
+                if (HttpJsonRequest.try_init("80.89.196.150:8000")) {
 
                     JSONObject json = new JSONObject();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         try {
-                            json.append("username",  CurrentAccount.username);
-                            json.append("password",  CurrentAccount.password);
+                            json.put("username",  CurrentAccount.username);
+                            json.put("password",  CurrentAccount.password);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -49,10 +50,21 @@ public class ActivityLogin extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(JSONObject response) {
 
-                                    if (response.has("Success")) {
-                                        Toast.makeText(ActivityLogin.this, response.toString(), Toast.LENGTH_SHORT).show();
-                                        return;
+                                    try {
+                                        if (response.getString("Result").equals("Success")) {
+                                            Toast.makeText(ActivityLogin.this, response.toString(), Toast.LENGTH_SHORT).show();
+
+                                            CurrentAccount.AccessToken = response.getString("Token");
+
+                                            ActivityLogin.this.runOnUiThread(() -> {
+                                                ActivityLogin.this.startService(
+                                                        new Intent(ActivityLogin.this, NotificationService.class));
+                                            });
+
+                                            return;
+                                        }
                                     }
+                                    catch (Exception e) { e.printStackTrace(); }
 
                                     Toast.makeText(ActivityLogin.this, "ERROR: " + response.toString(), Toast.LENGTH_SHORT).show();
                                 }

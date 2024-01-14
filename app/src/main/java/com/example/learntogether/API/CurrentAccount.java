@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 ///IP:PORT сервера, к которому подключались, также находится тут.
 public class CurrentAccount {
 
-    public static String username, password, server;
+    public static String username, password, server = "80.89.196.150:8000";
     public static String AccessToken;
 
 
