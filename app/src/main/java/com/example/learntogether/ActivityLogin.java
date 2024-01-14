@@ -2,10 +2,14 @@ package com.example.learntogether;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.learntogether.API.*;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ActivityLogin extends AppCompatActivity {
 
@@ -29,17 +33,28 @@ public class ActivityLogin extends AppCompatActivity {
                 Toast.makeText(this, "Connecting", Toast.LENGTH_SHORT).show();
 
                 if (HttpJsonRequest.try_init("192.168.3.73:8000")) {
-                    HttpJsonRequest.JsonRequestAsync("login/login",
-                            "{ \"username\" : \"" + CurrentAccount.username + "\", \"password\" : \"" + CurrentAccount.password + "\"}",
+
+                    JSONObject json = new JSONObject();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        try {
+                            json.append("username",  CurrentAccount.username);
+                            json.append("password",  CurrentAccount.password);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    HttpJsonRequest.JsonRequestAsync("login/login", json,
                             "POST", new HttpJsonRequest.Callback() {
                                 @Override
-                                public void onSuccess(String response) {
-                                    if (response.contains("Success")) {
-                                        Toast.makeText(ActivityLogin.this, "Success", Toast.LENGTH_SHORT).show();
+                                public void onSuccess(JSONObject response) {
+
+                                    if (response.has("Success")) {
+                                        Toast.makeText(ActivityLogin.this, response.toString(), Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
-                                    else {
-                                        Toast.makeText(ActivityLogin.this, response, Toast.LENGTH_SHORT).show();
-                                    }
+
+                                    Toast.makeText(ActivityLogin.this, "ERROR: " + response.toString(), Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override

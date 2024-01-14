@@ -3,6 +3,9 @@ package com.example.learntogether.API;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,7 +17,7 @@ public class HttpJsonRequest {
 
 
     public interface Callback {
-        void onSuccess(String response);
+        void onSuccess(JSONObject response);
         void onError(Exception e);
     }
 
@@ -26,33 +29,33 @@ public class HttpJsonRequest {
 
         HttpJsonRequest.serverURL = serverURL + "/";
 
-        AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+        AsyncTask<Void, Void, JSONObject> asyncTask = new AsyncTask<Void, Void, JSONObject>() {
             @Override
-            protected String doInBackground(Void... voids) {
+            protected JSONObject doInBackground(Void... voids) {
                 try {
-                    String ans = JsonRequest("test/Test", "{}", "POST");
+                    JSONObject ans = JsonRequest("test/Test", new JSONObject(), "POST");
                     if (ans != null) {
                         return ans;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return "";
+                return new JSONObject();
             }
         };
 
         asyncTask.execute();
 
         try {
-            String response = asyncTask.get(); // Блокирует текущий поток и ждет завершения AsyncTask
-            return response.contains("Success");
+            JSONObject response = asyncTask.get(); // Блокирует текущий поток и ждет завершения AsyncTask
+            return response.has("Success");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private static String JsonRequest(String urlString, String json, String method) throws IOException {
+    private static JSONObject JsonRequest(String urlString, JSONObject json, String method) throws IOException, JSONException {
 
         URL url = new URL("http://"+ serverURL + urlString);
         Log.d("API", "URL: " + url.toString());
@@ -63,7 +66,7 @@ public class HttpJsonRequest {
         conn.setRequestProperty("Content-Type", "application/json");
 
         OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-        writer.write(json);
+        writer.write(json.toString());
         writer.flush();
 
         int resp_code = conn.getResponseCode();
@@ -85,14 +88,18 @@ public class HttpJsonRequest {
 
         String rs = responseBuilder.toString();
         Log.d("API", rs);
-        return rs;
+
+        // парсим строку JSON в объект JSONObject
+        JSONObject result = new JSONObject(rs);
+
+        return result;
     }
 
-    public static void JsonRequestAsync(String urlString, String json, String method, Callback callback) {
-        new AsyncTask<Void, Void, String>() {
+    public static void JsonRequestAsync(String urlString, JSONObject json, String method, Callback callback) {
+        new AsyncTask<Void, Void, JSONObject>() {
 
             @Override
-            protected String doInBackground(Void... voids) {
+            protected JSONObject doInBackground(Void... voids) {
                 try {
                     return JsonRequest(urlString, json, method);
                 } catch (Exception e) {
@@ -101,7 +108,7 @@ public class HttpJsonRequest {
             }
 
             @Override
-            protected void onPostExecute(String response) {
+            protected void onPostExecute(JSONObject response) {
                 if (response != null) {
                     callback.onSuccess(response);
                 } else {
