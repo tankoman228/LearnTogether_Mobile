@@ -47,8 +47,6 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mHandler.removeCallbacks(mRunnable);
-        mHandler.post(mRunnable);
 
         NotificationChannel channel = new NotificationChannel(FOREGROUND_CHANNEL_ID, "My Service Channel",
                 NotificationManager.IMPORTANCE_HIGH);
@@ -68,6 +66,9 @@ public class NotificationService extends Service {
 
         Notification notification = builder.build();
         startForeground(FOREGROUND_NOTIFICATION_ID, notification);
+
+        mHandler.removeCallbacks(mRunnable);
+        mHandler.post(mRunnable);
 
         return START_STICKY; // Служба будет перезапущена после того, как была убита системой
     }
