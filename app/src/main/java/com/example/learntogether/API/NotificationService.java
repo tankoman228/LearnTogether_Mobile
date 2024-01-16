@@ -32,7 +32,7 @@ public class NotificationService extends Service {
     private Runnable mRunnable;
 
 
-    public static volatile boolean ConnectionSuccess = false;
+    public static volatile boolean ConnectionSuccess = false, ResultAwaited = false;
 
 
     @Override
@@ -93,8 +93,9 @@ public class NotificationService extends Service {
 
     private void socketCycle() {
 
-        for (;;) {
+        for (int attempts = 0; attempts < 10; attempts++) {
 
+            ResultAwaited = false;
             ConnectionSuccess = false;
             Log.d("API", "socketCycle start");
 
@@ -112,8 +113,11 @@ public class NotificationService extends Service {
                 String message;
                 boolean Accepted = mIn.readLine().contains("Accepted");
 
+                ResultAwaited = true;
                 if (Accepted)
                     ConnectionSuccess = true;
+                else
+                    break;
 
                 while (Accepted) {
                     message = mIn.readLine();

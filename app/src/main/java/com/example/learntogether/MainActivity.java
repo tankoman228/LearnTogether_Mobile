@@ -37,9 +37,12 @@ public class MainActivity extends AppCompatActivity  {
             startActivity(i);
         });
 
-        if (!ConnectionData.TryLoadAndConnect(this)) {
-            ConnectionData.TryLogin(this);
-        }
+        new Thread(() -> {
+            if (!ConnectionData.TryLoadAndConnect(this)) {
+                Log.d("API", "Auto Login!");
+                ConnectionData.TryLogin(this);
+            }
+        }).start();
 /*
         ServiceSocket.Activity = this;
 

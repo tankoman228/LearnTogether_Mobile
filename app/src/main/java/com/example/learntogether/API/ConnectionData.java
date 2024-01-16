@@ -47,20 +47,14 @@ public class ConnectionData {
                 if (accessToken != null) {
 
                     context.startForegroundService(new Intent(context, NotificationService.class));
-                    for (int k = 0; k < 20 && !NotificationService.ConnectionSuccess; k++) {
-                        Thread.sleep(500);
+                    for (int k = 0; k < 20 && !NotificationService.ResultAwaited; k++) {
+                        Thread.sleep(200);
                     }
                     if (NotificationService.ConnectionSuccess)
                         return true;
 
-
                     context.stopService(new Intent(context, NotificationService.class));
-
-                    return false;
-                    //...
                 }
-
-                return false;
             }
         }
         catch (Exception e){
