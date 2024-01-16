@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.learntogether.API.ConnectionData;
+
 public class MainActivity extends AppCompatActivity  {
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -34,6 +36,10 @@ public class MainActivity extends AppCompatActivity  {
             Intent i = new Intent(this, ActivityRegister.class);
             startActivity(i);
         });
+
+        if (!ConnectionData.TryLoadAndConnect(this)) {
+            ConnectionData.TryLogin(this);
+        }
 /*
         ServiceSocket.Activity = this;
 
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity  {
             startForegroundService(intent);
         }
 
-        CurrentAccount.TryLoadAccountInfo(this);
+        ConnectionData.TryLoadAccountInfo(this);
         if (ServiceSocket.try_login()) {
             Log.d("API", "AUTO LOGIN SUCCESS");
         }*/

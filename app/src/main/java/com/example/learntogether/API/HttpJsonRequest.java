@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class HttpJsonRequest {
 
@@ -117,6 +118,33 @@ public class HttpJsonRequest {
                 }
             }
         }.execute();
+    }
+
+    public static void JsonRequestAsyncGet(String urlString, JSONObject json, String method, Callback callback) {
+        try {
+            new AsyncTask<Void, Void, JSONObject>() {
+
+                @Override
+                protected JSONObject doInBackground(Void... voids) {
+                    try {
+                        return JsonRequest(urlString, json, method);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(JSONObject response) {
+                    if (response != null) {
+                        callback.onSuccess(response);
+                    } else {
+                        callback.onError(new Exception("Response is null"));
+                    }
+                }
+            }.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

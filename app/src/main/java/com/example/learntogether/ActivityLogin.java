@@ -25,62 +25,28 @@ public class ActivityLogin extends AppCompatActivity {
         etLogin = findViewById(R.id.etUsername);
         etPwd = findViewById(R.id.etPassword);
 
+        etIP.setText(ConnectionData.server_ip + ':' + ConnectionData.server_port);
+        etLogin.setText(ConnectionData.username);
+
         findViewById(R.id.btnEnter).setOnClickListener(l -> {
-            CurrentAccount.server = etIP.getText().toString();
-            CurrentAccount.password = etPwd.getText().toString();
-            CurrentAccount.username = etLogin.getText().toString();
+
+            String[] server = etIP.getText().toString().split(":");
+
+            ConnectionData.server_ip = server[0];
+            if (server.length > 1) {
+                ConnectionData.server_port = server[1];
+            }
+
+            ConnectionData.password = etPwd.getText().toString();
+            ConnectionData.username = etLogin.getText().toString();
+
+            ConnectionData.SaveAccountInfo(this);
+
+            Toast.makeText(this, "Connecting", Toast.LENGTH_SHORT).show();
 
             new Thread(() -> {
-                Toast.makeText(this, "Connecting", Toast.LENGTH_SHORT).show();
-
-                if (HttpJsonRequest.try_init("80.89.196.150:8000")) {
-
-                    JSONObject json = new JSONObject();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        try {
-                            json.put("username",  CurrentAccount.username);
-                            json.put("password",  CurrentAccount.password);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    HttpJsonRequest.JsonRequestAsync("login/login", json,
-                            "POST", new HttpJsonRequest.Callback() {
-                                @Override
-                                public void onSuccess(JSONObject response) {
-
-                                    try {
-                                        if (response.getString("Result").equals("Success")) {
-                                            Toast.makeText(ActivityLogin.this, response.toString(), Toast.LENGTH_SHORT).show();
-
-                                            CurrentAccount.AccessToken = response.getString("Token");
-
-                                            ActivityLogin.this.runOnUiThread(() -> {
-                                                ActivityLogin.this.startService(
-                                                        new Intent(ActivityLogin.this, NotificationService.class));
-                                            });
-
-                                            return;
-                                        }
-                                    }
-                                    catch (Exception e) { e.printStackTrace(); }
-
-                                    Toast.makeText(ActivityLogin.this, "ERROR: " + response.toString(), Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(ActivityLogin.this, "Error", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-                else {
-                    Toast.makeText(this, "No connection to server", Toast.LENGTH_SHORT).show();
-                }
-
-            }).run();
+                ConnectionData.TryLogin(this);
+            }).start();
         });
     }
 }

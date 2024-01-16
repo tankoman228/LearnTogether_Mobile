@@ -1,13 +1,15 @@
 package com.example.learntogether.API;
 
 import android.Manifest;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -15,7 +17,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.example.learntogether.MainActivity;
 import com.example.learntogether.R;
@@ -30,6 +31,10 @@ public class NotificationService extends Service {
     private Handler mHandler;
     private Runnable mRunnable;
 
+
+    public static volatile boolean ConnectionSuccess = false;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -37,10 +42,33 @@ public class NotificationService extends Service {
         mRunnable = () -> new NetworkTask().execute();
     }
 
+    private static final int FOREGROUND_NOTIFICATION_ID = 25;
+    private static final String FOREGROUND_CHANNEL_ID = "Notification Channel Service";
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mHandler.removeCallbacks(mRunnable);
         mHandler.post(mRunnable);
+
+        NotificationChannel channel = new NotificationChannel(FOREGROUND_CHANNEL_ID, "My Service Channel",
+                NotificationManager.IMPORTANCE_HIGH);
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(channel);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, FOREGROUND_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setContentTitle("Notification Service")
+                .setContentText("Service is running in foreground")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        builder.setContentIntent(pendingIntent);
+
+        Notification notification = builder.build();
+        startForeground(FOREGROUND_NOTIFICATION_ID, notification);
+
         return START_STICKY; // Служба будет перезапущена после того, как была убита системой
     }
 
@@ -67,21 +95,27 @@ public class NotificationService extends Service {
 
         for (;;) {
 
+            ConnectionSuccess = false;
             Log.d("API", "socketCycle start");
 
             try {
 
-                mSocket = new Socket("80.89.196.150", 24999);
+                mSocket = new Socket("80.89.196.150", Integer.parseInt(ConnectionData.notification_port));
 
                 mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 mOut = new PrintWriter(mSocket.getOutputStream(), true);
 
-                mOut.println(CurrentAccount.AccessToken.substring(0, 15));
+                mOut.println(ConnectionData.accessToken.substring(0, 15));
 
                 Log.d("API", "getting");
 
                 String message;
-                while (true) {
+                boolean Accepted = mIn.readLine().contains("Accepted");
+
+                if (Accepted)
+                    ConnectionSuccess = true;
+
+                while (Accepted) {
                     message = mIn.readLine();
                     if (message != null && message.length() > 2) {
                         showNotification(message);
@@ -91,6 +125,8 @@ public class NotificationService extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+
+                ConnectionSuccess = false;
 
                 try {
                     if (mIn != null) {
