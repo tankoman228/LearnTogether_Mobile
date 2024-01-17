@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_round_rect_bg">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:text="Это точно форум? "
+        android:textColor="@color/gray"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="Не могу понять, мне лень придумывать этот текст, короче. Ну и фиг с ним)"
+        android:textColor="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <TextView
+        android:id="@+id/tvCommentsNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="17.01.2024 23:20"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDateTime"
+        app:layout_constraintEnd_toEndOf="@+id/tvText"
+        app:layout_constraintTop_toTopOf="@+id/ivComments" />
+
+    <TextView
+        android:id="@+id/tvDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-20dp"
+        android:text="145"
+        android:textColor="@color/blue"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivComments"
+        app:layout_constraintStart_toEndOf="@+id/ivComments"
+        app:layout_constraintTop_toTopOf="@+id/ivComments"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/ibMenu"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:background="@color/black2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+
+    <ImageView
+        android:id="@+id/ivComments"
+        android:layout_width="80sp"
+        android:layout_height="50sp"
+        android:layout_marginStart="-8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="@+id/tvText"
+        app:layout_constraintTop_toBottomOf="@+id/tvText"
+        app:srcCompat="@drawable/discuss" />
+
+    <TextView
+        android:id="@+id/tvAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="By Tankoman228"
+        android:textColor="@color/blue"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="@+id/ibMenu" />
+</androidx.constraintlayout.widget.ConstraintLayout>
