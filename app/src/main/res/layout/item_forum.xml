@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <TextView
-        android:id="@+id/tvCommentsNum"
+        android:id="@+id/tvDateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -42,12 +42,12 @@
         android:text="17.01.2024 23:20"
         android:textColor="@color/blue"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvDateTime"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCommentsNum"
         app:layout_constraintEnd_toEndOf="@+id/tvText"
         app:layout_constraintTop_toTopOf="@+id/ivComments" />
 
     <TextView
-        android:id="@+id/tvDateTime"
+        android:id="@+id/tvCommentsNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-20dp"

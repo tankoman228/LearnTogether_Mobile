@@ -22,6 +22,9 @@ public class ConnectionManager {
             server_port = "8000",
             notification_port = "24999",
             accessToken;
+    public static int ID_Account;
+
+    public static boolean AllowedModerateComments = false;
 
 
     public static boolean TryLoadAndConnect(Context context) {
@@ -35,6 +38,7 @@ public class ConnectionManager {
             server_port = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("server_port", server_port);
             notification_port = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("notification_port", notification_port);
             accessToken = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("accessToken", null);
+            ID_Account = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getInt("ID_Account", -1);
 
             if (notification_port == null)
                 notification_port = "24999";
@@ -71,6 +75,7 @@ public class ConnectionManager {
         prefs.putString("server_port", server_port);
         prefs.putString("notification_port", notification_port);
         prefs.putString("accessToken", accessToken);
+        prefs.putInt("ID_Account", ID_Account);
 
         prefs.apply();
     }
