@@ -11,7 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.learntogether.API.ConnectionData;
+import com.example.learntogether.API.ConnectionManager;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity  {
         });
 
         new Thread(() -> {
-            if (!ConnectionData.TryLoadAndConnect(this)) {
+            if (!ConnectionManager.TryLoadAndConnect(this)) {
                 Log.d("API", "Auto Login!");
-                ConnectionData.TryLogin(this);
+                ConnectionManager.TryLogin(this);
             }
         }).start();
 /*
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity  {
             startForegroundService(intent);
         }
 
-        ConnectionData.TryLoadAccountInfo(this);
+        ConnectionManager.TryLoadAccountInfo(this);
         if (ServiceSocket.try_login()) {
             Log.d("API", "AUTO LOGIN SUCCESS");
         }*/

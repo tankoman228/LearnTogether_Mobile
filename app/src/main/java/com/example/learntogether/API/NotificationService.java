@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -102,12 +101,12 @@ public class NotificationService extends Service {
 
             try {
 
-                mSocket = new Socket("80.89.196.150", Integer.parseInt(ConnectionData.notification_port));
+                mSocket = new Socket("80.89.196.150", Integer.parseInt(ConnectionManager.notification_port));
 
                 mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 mOut = new PrintWriter(mSocket.getOutputStream(), true);
 
-                mOut.println(ConnectionData.accessToken.substring(0, 15));
+                mOut.println(ConnectionManager.accessToken.substring(0, 15));
 
                 Log.d("API", "getting");
 

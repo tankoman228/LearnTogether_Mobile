@@ -4,6 +4,7 @@
         android:id="@+id/menuNews"
         android:icon="@drawable/news"
         android:title=""
+
         />
     <item
         android:id="@+id/menuFiles"

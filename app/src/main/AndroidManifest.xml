@@ -18,10 +18,14 @@
         android:theme="@style/Theme.LearnTogether"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ActivityCentral"
+            android:exported="false" />
+
         <service
             android:name=".API.NotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".ActivityLogin"

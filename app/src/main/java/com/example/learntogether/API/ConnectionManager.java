@@ -1,6 +1,5 @@
 package com.example.learntogether.API;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,14 +8,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.learntogether.ActivityLogin;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 ///Хранит информацию о последнем аккаунте, в который заходил пользователь
 ///IP:PORT сервера, к которому подключались, также находится тут.
-public class ConnectionData {
+public class ConnectionManager {
 
     public static String
             username = "tank",
@@ -87,8 +84,8 @@ public class ConnectionData {
             JSONObject json = new JSONObject();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 try {
-                    json.put("username",  ConnectionData.username);
-                    json.put("password",  ConnectionData.password);
+                    json.put("username",  ConnectionManager.username);
+                    json.put("password",  ConnectionManager.password);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -101,7 +98,7 @@ public class ConnectionData {
 
                             try {
                                 if (response.getString("Result").equals("Success")) {
-                                    ConnectionData.accessToken = response.getString("Token");
+                                    ConnectionManager.accessToken = response.getString("Token");
 
                                     ((AppCompatActivity)context).runOnUiThread(() -> {
                                         context.startForegroundService(new Intent(context, NotificationService.class));
