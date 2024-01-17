@@ -2,7 +2,7 @@
     <string name="app_name">LearnTogether</string>
     <string name="registration">Регистрация</string>
     <string name="ip_server">IP Адрес сервера</string>
-    <string name="register_token">Токен регистрации</string>
+    <string name="register_token">Токен для регистрации</string>
     <string name="to_register">Зарегистрироваться</string>
     <string name="learn_together">Learn Together</string>
     <string name="sign_in">Вход</string>
