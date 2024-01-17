@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:fitsSystemWindows="true"
     tools:context=".ActivityComments">
 
     <TextView
@@ -19,7 +18,7 @@
         android:textColor="@color/gray"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvHeader" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/btnBack"
         android:layout_width="30sp"
         android:layout_height="30sp"
         android:layout_marginStart="8dp"
@@ -58,6 +57,7 @@
         app:srcCompat="@android:drawable/btn_dialog" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/commentAddForm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="32dp"
@@ -65,13 +65,25 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/shape_round_rect_bg"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
+
+        <ImageButton
+            android:id="@+id/btnCancel"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/tvHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/btn_dialog" />
 
         <SeekBar
             android:id="@+id/seekBar"
@@ -100,23 +112,12 @@
             app:layout_constraintEnd_toEndOf="@+id/seekBar"
             app:layout_constraintStart_toStartOf="@+id/seekBar" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:suffixText="dd" />
-
         <EditText
             android:id="@+id/editTextTextMultiLine"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="8dp"
             android:background="@color/black"
@@ -129,7 +130,7 @@
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/btnCancel" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
