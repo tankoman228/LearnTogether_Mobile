@@ -6,10 +6,18 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 ///Хранит информацию о последнем аккаунте, в который заходил пользователь
 ///IP:PORT сервера, к которому подключались, также находится тут.
@@ -23,6 +31,7 @@ public class ConnectionManager {
             notification_port = "24999",
             accessToken;
     public static int ID_Account;
+    public static ArrayList<String> permissions = new ArrayList<>();
 
     public static boolean AllowedModerateComments = false;
 
