@@ -2,6 +2,7 @@ package com.example.learntogether;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,11 +11,14 @@ import android.widget.ListView;
 
 import com.example.learntogether.API.ForumLoader;
 import com.example.learntogether.Adapters.ForumAdapter;
+import com.example.learntogether.SubActivity.CreateAskOnTheForum;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ActivityCentral extends AppCompatActivity {
 
     ImageButton btnNews, btnFiles, btnMeetings, btnDiscuss, btnPeople;
     ListView lv;
+    FloatingActionButton btnAdd;
 
     enum Mode {
         News, Files, Meetings, Discuss, People
@@ -37,6 +41,16 @@ public class ActivityCentral extends AppCompatActivity {
         btnMeetings.setOnClickListener(l -> switchMode(Mode.Meetings));
         btnDiscuss.setOnClickListener(l -> switchMode(Mode.Discuss));
         btnPeople.setOnClickListener(l -> switchMode(Mode.People));
+
+        btnAdd = findViewById(R.id.floatingActionButton);
+        btnAdd.setOnClickListener(l -> {
+            switch (currentMode) {
+                case Discuss:
+                    startActivity(new Intent(this, CreateAskOnTheForum.class));
+                    break;
+            }
+        });
+
 
         lv = findViewById(R.id.lv);
     }
