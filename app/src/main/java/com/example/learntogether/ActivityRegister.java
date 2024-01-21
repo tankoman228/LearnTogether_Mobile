@@ -54,17 +54,16 @@ public class ActivityRegister extends AppCompatActivity {
                 @Override
                 public void onSuccess(JSONObject response) {
                     try {
-                        if (response.has("Success")) {
-
+                        if (response.getString("Result").equals("Success")) {
                             ConnectionManager.accessToken = response.getString("Token");
 
-
-
+                            ActivityRegister.this.runOnUiThread(() -> {
+                                ActivityRegister.this.startActivity(new Intent(ActivityRegister.this, ActivityCentral.class));
+                            });
 
                         } else if (response.has("Error")) {
 
                             Toast.makeText(ActivityRegister.this, response.getString("Error"), Toast.LENGTH_SHORT).show();
-
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

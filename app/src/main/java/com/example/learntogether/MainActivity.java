@@ -15,17 +15,15 @@ import com.example.learntogether.API.ConnectionManager;
 
 public class MainActivity extends AppCompatActivity  {
 
+    public static MainActivity THIS;
+
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startActivity(new Intent(this, ActivityCentral.class));
-
-        if (true)
-            return;
-
+        THIS = this;
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 10);
@@ -59,5 +57,25 @@ public class MainActivity extends AppCompatActivity  {
         if (ServiceSocket.try_login()) {
             Log.d("API", "AUTO LOGIN SUCCESS");
         }*/
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        THIS = null;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        THIS = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        THIS = this;
     }
 }

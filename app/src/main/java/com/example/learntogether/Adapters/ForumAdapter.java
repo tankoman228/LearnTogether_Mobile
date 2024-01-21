@@ -51,10 +51,9 @@ public class ForumAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View view = convertView;
-        if (view == null) {
-            view = lInflater.inflate(R.layout.item_comment, parent, false);
-        }
+        View view;
+        view = lInflater.inflate(R.layout.item_forum, parent, false);
+
 
         ForumAsk thisForumAsk = getForumAsk(position);
 

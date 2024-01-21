@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.learntogether.ActivityCentral;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +51,10 @@ public class ConnectionManager {
             notification_port = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("notification_port", notification_port);
             accessToken = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("accessToken", null);
             ID_Account = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getInt("ID_Account", -1);
+
+            if (!HttpJsonRequest.try_init(server_ip + ":" + server_port)) {
+
+            }
 
             if (notification_port == null)
                 notification_port = "24999";
@@ -105,12 +112,13 @@ public class ConnectionManager {
                 }
             }
 
-            HttpJsonRequest.JsonRequestAsync("login/login", json,
+            HttpJsonRequest.JsonRequestSync("login/login", json,
                     "POST", new HttpJsonRequest.Callback() {
                         @Override
                         public void onSuccess(JSONObject response) {
 
                             try {
+                                Log.d("API", response.toString());
                                 if (response.getString("Result").equals("Success")) {
                                     ConnectionManager.accessToken = response.getString("Token");
 
@@ -118,6 +126,10 @@ public class ConnectionManager {
                                         context.startForegroundService(new Intent(context, NotificationService.class));
                                         Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
                                         SaveAccountInfo(context);
+
+                                        ((AppCompatActivity) context).runOnUiThread(() -> {
+                                            context.startActivity(new Intent(context, ActivityCentral.class));
+                                        });
                                     });
                                 }
                             }

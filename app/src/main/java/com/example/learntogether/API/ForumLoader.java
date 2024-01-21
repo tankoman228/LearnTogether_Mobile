@@ -1,7 +1,5 @@
 package com.example.learntogether.API;
 
-import static java.lang.System.in;
-
 import com.example.learntogether.FromAPI.ForumAsk;
 
 import org.json.JSONArray;
@@ -23,14 +21,17 @@ public class ForumLoader {
         try {
             json.put("id_max", ID_Max);
             json.put("group", Group);
+            json.put("search_string", "");
+            json.put("number", 5);
+            json.put("session_token", ConnectionManager.accessToken);
         }
         catch (Exception e) { e.printStackTrace(); }
 
-        HttpJsonRequest.JsonRequestAsyncGet("forum/get_asks", json, "POST", new HttpJsonRequest.Callback() {
+        HttpJsonRequest.JsonRequestSync("get_asks", json, "POST", new HttpJsonRequest.Callback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
-                    JSONArray asks = response.getJSONArray("asks");
+                    JSONArray asks = response.getJSONArray("Asks");
 
                     int i = 0;
                     while (i < asks.length()) {
@@ -44,7 +45,7 @@ public class ForumLoader {
                         new_fa.ID_ForumAsk = id;
                         new_fa.Solved = o.getBoolean("Solved");
                         new_fa.CommentsFound = o.getInt("CommentsFound");
-                        new_fa.AuthorTitle = o.getString("AuthotTitle");
+                        new_fa.AuthorTitle = o.getString("AuthorTitle");
                         new_fa.ID_Author = o.getInt("ID_Author");
                         new_fa.ID_InfoBase = o.getInt("ID_InfoBase");
                         new_fa.Rate = o.getDouble("Rate");

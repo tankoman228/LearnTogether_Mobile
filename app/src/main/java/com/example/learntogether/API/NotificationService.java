@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.example.learntogether.ActivityCentral;
 import com.example.learntogether.MainActivity;
 import com.example.learntogether.R;
 
@@ -118,6 +119,12 @@ public class NotificationService extends Service {
                     ConnectionSuccess = true;
                 else
                     break;
+
+                if (MainActivity.THIS != null) {
+                    MainActivity.THIS.runOnUiThread(() -> {
+                        MainActivity.THIS.startActivity(new Intent(MainActivity.THIS, ActivityCentral.class));
+                    });
+                }
 
                 while (Accepted) {
                     message = mIn.readLine();

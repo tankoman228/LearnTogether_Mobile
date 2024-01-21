@@ -1,6 +1,5 @@
 package com.example.learntogether.API;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -12,7 +11,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class HttpJsonRequest {
 
@@ -23,44 +24,38 @@ public class HttpJsonRequest {
     }
 
     private static String serverURL;
+    private static volatile JSONObject response = new JSONObject();
 
 
-    private static volatile boolean Success = false;
-    public static boolean try_init(String serverURL) {
+    public static boolean try_init(String serverIpPort) {
 
-        HttpJsonRequest.serverURL = serverURL + "/";
+        HttpJsonRequest.serverURL = "http://" + serverIpPort + "/";
 
-        AsyncTask<Void, Void, JSONObject> asyncTask = new AsyncTask<Void, Void, JSONObject>() {
-            @Override
-            protected JSONObject doInBackground(Void... voids) {
-                try {
-                    JSONObject ans = JsonRequest("test/Test", new JSONObject(), "POST");
-                    if (ans != null) {
-                        Log.d("API", String.valueOf(ans));
-                        return ans;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return new JSONObject();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                response = JsonRequest("test/Test", new JSONObject(), "POST");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        };
-
-        asyncTask.execute();
+        });
 
         try {
-            JSONObject response = asyncTask.get(); // Блокирует текущий поток и ждет завершения AsyncTask
-            return response.has("Success");
-        } catch (Exception e) {
+            executor.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
         }
+
+        return response.has("Success");
     }
+
 
     private static JSONObject JsonRequest(String urlString, JSONObject json, String method) throws IOException, JSONException {
 
-        URL url = new URL("http://"+ serverURL + urlString);
+        URL url = new URL(serverURL + urlString);
         Log.d("API", "URL: " + url.toString());
+        Log.d("API", "Send: " + json.toString());
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
@@ -92,58 +87,55 @@ public class HttpJsonRequest {
         Log.d("API", rs);
 
         // парсим строку JSON в объект JSONObject
-        JSONObject result = new JSONObject(rs);
+        response = new JSONObject(rs);
 
-        return result;
+        return response;
     }
 
     public static void JsonRequestAsync(String urlString, JSONObject json, String method, Callback callback) {
-        new AsyncTask<Void, Void, JSONObject>() {
-
-            @Override
-            protected JSONObject doInBackground(Void... voids) {
-                try {
-                    return JsonRequest(urlString, json, method);
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject response) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                response = JsonRequest(urlString, json, method);
                 if (response != null) {
                     callback.onSuccess(response);
                 } else {
                     callback.onError(new Exception("Response is null"));
                 }
+            } catch (Exception e) {
+                callback.onError(e);
             }
-        }.execute();
+        });
     }
 
-    public static void JsonRequestAsyncGet(String urlString, JSONObject json, String method, Callback callback) {
+
+    public static void JsonRequestSync(String urlString, JSONObject json, String method, Callback callback) {
+        Log.d("API", "JsonRequestSync");
+
         try {
-            new AsyncTask<Void, Void, JSONObject>() {
+            ExecutorService ex = Executors.newSingleThreadExecutor();
+            ex.execute(() -> {
+                Log.d("API", "NOT_ASYNC_REQUEST_START");
+                try {
+                    response = JsonRequest(urlString, json, method);
 
-                @Override
-                protected JSONObject doInBackground(Void... voids) {
-                    try {
-                        return JsonRequest(urlString, json, method);
-                    } catch (Exception e) {
-                        return null;
-                    }
-                }
-
-                @Override
-                protected void onPostExecute(JSONObject response) {
                     if (response != null) {
                         callback.onSuccess(response);
                     } else {
                         callback.onError(new Exception("Response is null"));
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onError(e);
                 }
-            }.get();
+            });
+
+            ex.awaitTermination(10, TimeUnit.SECONDS);
+            callback.onSuccess(response);
+
         } catch (Exception e) {
             e.printStackTrace();
+            callback.onError(e);
         }
     }
 

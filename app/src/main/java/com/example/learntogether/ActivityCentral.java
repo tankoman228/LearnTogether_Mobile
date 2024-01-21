@@ -3,12 +3,18 @@ package com.example.learntogether;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
+
+import com.example.learntogether.API.ForumLoader;
+import com.example.learntogether.Adapters.ForumAdapter;
 
 public class ActivityCentral extends AppCompatActivity {
 
     ImageButton btnNews, btnFiles, btnMeetings, btnDiscuss, btnPeople;
+    ListView lv;
 
     enum Mode {
         News, Files, Meetings, Discuss, People
@@ -31,11 +37,30 @@ public class ActivityCentral extends AppCompatActivity {
         btnMeetings.setOnClickListener(l -> switchMode(Mode.Meetings));
         btnDiscuss.setOnClickListener(l -> switchMode(Mode.Discuss));
         btnPeople.setOnClickListener(l -> switchMode(Mode.People));
+
+        lv = findViewById(R.id.lv);
     }
 
     private void switchMode(Mode i) {
         currentMode = i;
         refreshButtonsColor();
+
+        switch (i) {
+            case Discuss:
+                load_forum();
+                break;
+        }
+    }
+
+    private void load_forum() {
+        new Thread(() -> {
+            Log.d("API", "Loading Forum");
+            ForumLoader.Reload(99999, 1);
+
+            ActivityCentral.this.runOnUiThread(() -> {
+                lv.setAdapter(new ForumAdapter(ActivityCentral.this, ForumLoader.Asks));
+            });
+        }).start();
     }
 
     private void refreshButtonsColor() {
