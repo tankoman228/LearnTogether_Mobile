@@ -10,12 +10,53 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.learntogether.API.ConnectionManager;
+import com.example.learntogether.API.NotificationService;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity  {
 
     public static MainActivity THIS;
+
+    private TextView tvStatus;
+    private ProgressBar progressBar;
+    private Button btnLogin, btnRegister, btnCancel;
+
+    public static void upd_loading_status(String text) {
+        if (THIS == null)
+            return;
+        THIS.runOnUiThread(() -> {
+            THIS.tvStatus.setText(text);
+        });
+    }
+    public static void setIsLoading(boolean isLoading) {
+        if (THIS == null)
+            return;
+        THIS.runOnUiThread(() -> {
+            if (isLoading) {
+                THIS.tvStatus.setVisibility(View.VISIBLE);
+                THIS.progressBar.setVisibility(View.VISIBLE);
+                THIS.btnCancel.setVisibility(View.VISIBLE);
+
+                THIS.btnRegister.setVisibility(View.INVISIBLE);
+                THIS.btnLogin.setVisibility(View.INVISIBLE);
+            }
+            else {
+                THIS.tvStatus.setVisibility(View.INVISIBLE);
+                THIS.progressBar.setVisibility(View.INVISIBLE);
+                THIS.btnCancel.setVisibility(View.INVISIBLE);
+
+                THIS.btnRegister.setVisibility(View.VISIBLE);
+                THIS.btnLogin.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
@@ -30,33 +71,50 @@ public class MainActivity extends AppCompatActivity  {
             return;
         }
 
-        findViewById(R.id.btnGoEnter).setOnClickListener(l -> {
+        tvStatus = findViewById(R.id.tvStatus);
+        progressBar = findViewById(R.id.progressBar);
+        btnLogin = findViewById(R.id.btnGoEnter);
+        btnRegister = findViewById(R.id.btnGoRegister);
+        btnCancel = findViewById(R.id.brnCancel);
+
+        btnLogin.setOnClickListener(l -> {
             Intent i = new Intent(this, ActivityLogin.class);
             startActivity(i);
         });
-        findViewById(R.id.btnGoRegister).setOnClickListener(l -> {
+        btnRegister.setOnClickListener(l -> {
             Intent i = new Intent(this, ActivityRegister.class);
             startActivity(i);
+        });
+        btnCancel.setOnClickListener(l -> {
+            setIsLoading(false);
+            stopService(new Intent(this, NotificationService.class));
         });
 
         new Thread(() -> {
             if (!ConnectionManager.TryLoadAndConnect(this)) {
+                upd_loading_status("Can\'t continue session.\nTrying to sign up" +
+                        "");
                 Log.d("API", "Auto Login!");
                 ConnectionManager.TryLogin(this);
+                setIsLoading(false);
             }
         }).start();
-/*
-        ServiceSocket.Activity = this;
 
-        if (ServiceSocket.THIS == null) {
-            Intent intent = new Intent(this, ServiceSocket.class);
-            startForegroundService(intent);
-        }
-
-        ConnectionManager.TryLoadAccountInfo(this);
-        if (ServiceSocket.try_login()) {
-            Log.d("API", "AUTO LOGIN SUCCESS");
-        }*/
+        new Thread(() -> {
+            float a = 2f;
+            while (true) {
+                a += 2.5;
+                try {
+                    Thread.sleep(10);
+                    progressBar.setRotation(a);
+                } catch (InterruptedException e) {
+                   e.printStackTrace();
+                }
+                if (a > 360) {
+                    a = 0;
+                }
+            }
+        }).start();
     }
 
     @Override

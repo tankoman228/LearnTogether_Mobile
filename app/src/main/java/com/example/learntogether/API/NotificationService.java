@@ -94,7 +94,11 @@ public class NotificationService extends Service {
 
     private void socketCycle() {
 
-        for (int attempts = 0; attempts < 10; attempts++) {
+        MainActivity.setIsLoading(true);
+
+        for (int attempts = 1; attempts < 3; attempts++) {
+
+            MainActivity.upd_loading_status("Connection trying: attempt " + attempts);
 
             ResultAwaited = false;
             ConnectionSuccess = false;
@@ -109,6 +113,7 @@ public class NotificationService extends Service {
 
                 mOut.println(ConnectionManager.accessToken.substring(0, 15));
 
+                MainActivity.upd_loading_status("Connected. Waiting for answer");
                 Log.d("API", "getting");
 
                 String message;
@@ -117,8 +122,11 @@ public class NotificationService extends Service {
                 ResultAwaited = true;
                 if (Accepted)
                     ConnectionSuccess = true;
-                else
-                    break;
+                else {
+                    MainActivity.upd_loading_status("Session declined. Autologin");
+                    return;
+                }
+                MainActivity.upd_loading_status("Successful. Socket opened");
 
                 if (MainActivity.THIS != null) {
                     MainActivity.THIS.runOnUiThread(() -> {
@@ -137,6 +145,8 @@ public class NotificationService extends Service {
                 e.printStackTrace();
             } finally {
 
+                MainActivity.upd_loading_status("Error, trying again");
+
                 ConnectionSuccess = false;
 
                 try {
@@ -154,13 +164,16 @@ public class NotificationService extends Service {
                 }
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
             Log.d("API", "finished");
         }
+
+        MainActivity.upd_loading_status("Cannot connect");
+        MainActivity.setIsLoading(false);
     }
 
 

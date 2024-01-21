@@ -130,7 +130,7 @@ public class HttpJsonRequest {
                 }
             });
 
-            ex.awaitTermination(10, TimeUnit.SECONDS);
+            ex.awaitTermination(5, TimeUnit.SECONDS);
             callback.onSuccess(response);
 
         } catch (Exception e) {
