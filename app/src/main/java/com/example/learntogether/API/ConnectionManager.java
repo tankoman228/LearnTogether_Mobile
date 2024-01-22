@@ -118,14 +118,14 @@ public class ConnectionManager {
         if (HttpJsonRequest.try_init(server_ip + ":" + server_port)) {
 
             JSONObject json = new JSONObject();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
                 try {
                     json.put("username",  ConnectionManager.username);
                     json.put("password",  ConnectionManager.password);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-            }
+
 
             HttpJsonRequest.JsonRequestSync("login/login", json,
                     "POST", new HttpJsonRequest.Callback() {
