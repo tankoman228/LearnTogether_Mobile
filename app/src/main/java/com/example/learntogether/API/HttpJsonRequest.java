@@ -55,7 +55,7 @@ public class HttpJsonRequest {
 
         URL url = new URL(serverURL + urlString);
         Log.d("API", "URL: " + url.toString());
-        /*Log.d("API", "Send: " + json.toString());*/
+        Log.d("API", "Send: " + json.toString());
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
