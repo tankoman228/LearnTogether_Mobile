@@ -32,7 +32,7 @@ public class NotificationService extends Service {
     private static Runnable mRunnable;
 
 
-    public static volatile boolean ConnectionSuccess = false, ResultAwaited = false;
+    public static volatile boolean ConnectionSuccess = false, ResultAwaited = false, TokenAccepted = false;
 
 
     @Override
@@ -77,6 +77,7 @@ public class NotificationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mRunnable); // Остановка выполнения процесса при уничтожении службы
+        stopForeground(true);
     }
 
     @Nullable
@@ -92,7 +93,7 @@ public class NotificationService extends Service {
     private PrintWriter mOut;
 
 
-    private void socketCycle() {
+    public void socketCycle() {
 
         MainActivity.setIsLoading(true);
 
@@ -102,11 +103,12 @@ public class NotificationService extends Service {
 
             ResultAwaited = false;
             ConnectionSuccess = false;
+            TokenAccepted = false;
             Log.d("API", "socketCycle start");
 
             try {
 
-                mSocket = new Socket("80.89.196.150", Integer.parseInt(ConnectionManager.notification_port));
+                mSocket = new Socket(ConnectionManager.server_ip, Integer.parseInt(ConnectionManager.notification_port));
 
                 mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
                 mOut = new PrintWriter(mSocket.getOutputStream(), true);
@@ -116,16 +118,27 @@ public class NotificationService extends Service {
                 MainActivity.upd_loading_status("Connected. Waiting for answer");
                 Log.d("API", "getting");
 
-                String message;
-                boolean Accepted = mIn.readLine().contains("Accepted");
+                String message = mIn.readLine();
+                boolean Accepted = message.contains("Accepted");
+                boolean Declined = message.contains("Declined");
 
-                ResultAwaited = true;
-                if (Accepted)
+                if (Accepted || Declined) {
+
                     ConnectionSuccess = true;
-                else {
-                    MainActivity.upd_loading_status("Session declined. Autologin");
-                    return;
+                    if (Declined) {
+
+                        MainActivity.upd_loading_status("Session declined. Autologin");
+
+                        if (!ConnectionManager.TryLogin(this))
+                            break;
+
+                        MainActivity.upd_loading_status("Session error");
+                        ResultAwaited = true;
+                        return;
+                    }
+                    TokenAccepted = true;
                 }
+                ResultAwaited = true;
                 MainActivity.upd_loading_status("Successful. Socket opened");
 
                 if (MainActivity.THIS != null) {
@@ -141,13 +154,14 @@ public class NotificationService extends Service {
                     }
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
 
                 MainActivity.upd_loading_status("Error, trying again");
 
                 ConnectionSuccess = false;
+                ResultAwaited = true;
 
                 try {
                     if (mIn != null) {
@@ -169,11 +183,17 @@ public class NotificationService extends Service {
                     e.printStackTrace();
                 }
             }
-            Log.d("API", "finished");
+            Log.d("API", "finished socket attempt");
         }
 
         MainActivity.upd_loading_status("Cannot connect");
         MainActivity.setIsLoading(false);
+
+        Log.d("API", "Notification service finished itself");
+
+        stopForeground(true);
+        mHandler.removeCallbacks(mRunnable);
+        stopSelf();
     }
 
 

@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        stopService(new Intent(this, NotificationService.class));
+
         THIS = this;
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 
@@ -73,10 +75,7 @@ public class MainActivity extends AppCompatActivity  {
 
         Thread x = new Thread(() -> {
             if (!ConnectionManager.TryLoadAndConnect(this)) {
-                upd_loading_status("Can\'t continue session.\nTrying to sign up" +
-                        "");
-                Log.d("API", "Auto Login!");
-                ConnectionManager.TryLogin(this);
+                upd_loading_status("Can\'t continue session.\nTrying to sign up");
                 setIsLoading(false);
             }
         });

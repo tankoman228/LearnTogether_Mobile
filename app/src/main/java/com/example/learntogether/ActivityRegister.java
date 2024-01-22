@@ -74,7 +74,7 @@ public class ActivityRegister extends AppCompatActivity {
                 @Override
                 public void onError(Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(ActivityRegister.this, "Server error", Toast.LENGTH_SHORT).show();
+                    ActivityRegister.this.runOnUiThread(() -> Toast.makeText(ActivityRegister.this, "Server error", Toast.LENGTH_SHORT).show());
                 }
             });
 

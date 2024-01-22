@@ -92,12 +92,11 @@ public class ActivityComments extends AppCompatActivity {
                 return;
             }
 
-            HttpJsonRequest.JsonRequestSync("comments/add_comment", json, "POST", new HttpJsonRequest.Callback() {
+            HttpJsonRequest.JsonRequestAsync("comments/add_comment", json, "POST", new HttpJsonRequest.Callback() {
                 @Override
                 public void onSuccess(JSONObject response) {
 
                     ActivityComments.this.runOnUiThread(() -> {
-                        commentForm.setVisibility(View.INVISIBLE);
                         updComments();
                     });
                 }
@@ -107,6 +106,8 @@ public class ActivityComments extends AppCompatActivity {
                     Toast.makeText(ActivityComments.this, "Request error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+
+            commentForm.setVisibility(View.INVISIBLE);
         });
     }
 

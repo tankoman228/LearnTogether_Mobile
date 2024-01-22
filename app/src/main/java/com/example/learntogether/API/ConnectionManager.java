@@ -17,6 +17,11 @@ import com.example.learntogether.MainActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -54,8 +59,14 @@ public class ConnectionManager {
             ID_Account = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getInt("ID_Account", -1);
 
             if (!HttpJsonRequest.try_init(server_ip + ":" + server_port)) {
+                if (MainActivity.THIS != null)
+                    MainActivity.THIS.runOnUiThread(() ->
+                            Toast.makeText(MainActivity.THIS, "No connection to server", Toast.LENGTH_SHORT).show());
 
+                MainActivity.setIsLoading(false);
+                return false;
             }
+            MainActivity.upd_loading_status("Opening session");
 
             if (notification_port == null)
                 notification_port = "24999";
@@ -67,13 +78,14 @@ public class ConnectionManager {
                     context.startForegroundService(new Intent(context, NotificationService.class));
                     for (int k = 0; k < 20 && !NotificationService.ResultAwaited; k++) {
                         Thread.sleep(200);
+                        MainActivity.upd_loading_status("Waiting: " + k);
                     }
-                    if (NotificationService.ConnectionSuccess)
+                    if (NotificationService.TokenAccepted)
                         return true;
-
-                    context.stopService(new Intent(context, NotificationService.class));
                 }
+                return TryLogin(context);
             }
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -97,9 +109,11 @@ public class ConnectionManager {
         prefs.apply();
     }
 
-    public static void TryLogin(Context context) {
+    private static volatile boolean LoginSuccess = false;
+    public static boolean TryLogin(Context context) {
 
         context.stopService(new Intent(context, NotificationService.class));
+        LoginSuccess = false;
 
         if (HttpJsonRequest.try_init(server_ip + ":" + server_port)) {
 
@@ -113,7 +127,7 @@ public class ConnectionManager {
                 }
             }
 
-            HttpJsonRequest.JsonRequestAsync("login/login", json,
+            HttpJsonRequest.JsonRequestSync("login/login", json,
                     "POST", new HttpJsonRequest.Callback() {
                         @Override
                         public void onSuccess(JSONObject response) {
@@ -121,20 +135,28 @@ public class ConnectionManager {
                             try {
                                 Log.d("API", response.toString());
                                 if (response.getString("Result").equals("Success")) {
+
                                     ConnectionManager.accessToken = response.getString("Token");
 
-                                    ((AppCompatActivity)context).runOnUiThread(() -> {
+                                    context.startForegroundService(new Intent(context, NotificationService.class));
+                                    SaveAccountInfo(context);
 
-                                        MainActivity.setIsLoading(false);
-
-                                        context.startForegroundService(new Intent(context, NotificationService.class));
-                                        Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
-                                        SaveAccountInfo(context);
-
+                                    try {
                                         ((AppCompatActivity) context).runOnUiThread(() -> {
-                                            context.startActivity(new Intent(context, ActivityCentral.class));
+
+                                            MainActivity.setIsLoading(false);
+
+                                            Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
+                                            ((AppCompatActivity) context).runOnUiThread(() -> {
+                                                context.startActivity(new Intent(context, ActivityCentral.class));
+                                            });
+
+                                            LoginSuccess = true;
                                         });
-                                    });
+                                    }
+                                    catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                                 else {
                                     MainActivity.setIsLoading(false);
@@ -146,12 +168,19 @@ public class ConnectionManager {
                         @Override
                         public void onError(Exception e) {
                             e.printStackTrace();
-                            ((AppCompatActivity)context).runOnUiThread(() -> {
-                                context.startForegroundService(new Intent(context, NotificationService.class));
-                                Toast.makeText(context, "no", Toast.LENGTH_SHORT).show();
-                            });
+
+                            try {
+                                ((AppCompatActivity) context).runOnUiThread(() -> {
+                                    context.startForegroundService(new Intent(context, NotificationService.class));
+                                    Toast.makeText(context, "no", Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                            catch (Exception ee) {
+                                ee.printStackTrace();
+                            }
                         }
             });
         }
+        return LoginSuccess;
     }
 }
