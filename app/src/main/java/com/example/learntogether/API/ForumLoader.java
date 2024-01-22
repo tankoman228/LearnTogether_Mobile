@@ -1,5 +1,6 @@
 package com.example.learntogether.API;
 
+import com.example.learntogether.ActivityCentralFeedback;
 import com.example.learntogether.FromAPI.ForumAsk;
 
 import org.json.JSONArray;
@@ -7,12 +8,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ForumLoader {
 
     final int MAX_REQUIRE = 15;
 
     public static ArrayList<ForumAsk> Asks = new ArrayList<>();
+    public static volatile ActivityCentralFeedback activityCentral;
 
     public static void Reload(int ID_Max, int Group) {
 
@@ -22,12 +25,12 @@ public class ForumLoader {
             json.put("id_max", ID_Max);
             json.put("group", Group);
             json.put("search_string", "");
-            json.put("number", 5);
+            json.put("number", 50);
             json.put("session_token", ConnectionManager.accessToken);
         }
         catch (Exception e) { e.printStackTrace(); }
 
-        HttpJsonRequest.JsonRequestSync("get_asks", json, "POST", new HttpJsonRequest.Callback() {
+        HttpJsonRequest.JsonRequestAsync("get_asks", json, "POST", new HttpJsonRequest.Callback() {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
@@ -58,6 +61,9 @@ public class ForumLoader {
 
                         i++;
                     }
+                    Asks.sort(Comparator.comparingInt(x -> ((ForumAsk)x).ID_ForumAsk).reversed());
+
+                    activityCentral.updForum();
                 }
                 catch (JSONException ee) {
                     ee.printStackTrace();

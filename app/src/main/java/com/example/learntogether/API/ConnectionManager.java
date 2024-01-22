@@ -112,7 +112,7 @@ public class ConnectionManager {
                 }
             }
 
-            HttpJsonRequest.JsonRequestSync("login/login", json,
+            HttpJsonRequest.JsonRequestAsync("login/login", json,
                     "POST", new HttpJsonRequest.Callback() {
                         @Override
                         public void onSuccess(JSONObject response) {

@@ -14,7 +14,7 @@ import com.example.learntogether.Adapters.ForumAdapter;
 import com.example.learntogether.SubActivity.CreateAskOnTheForum;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ActivityCentral extends AppCompatActivity {
+public class ActivityCentral extends AppCompatActivity implements ActivityCentralFeedback {
 
     ImageButton btnNews, btnFiles, btnMeetings, btnDiscuss, btnPeople;
     ListView lv;
@@ -29,6 +29,8 @@ public class ActivityCentral extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_central);
+
+        ForumLoader.activityCentral = this;
 
         btnNews = findViewById(R.id.btnNews);
         btnFiles = findViewById(R.id.btnFiles);
@@ -67,14 +69,8 @@ public class ActivityCentral extends AppCompatActivity {
     }
 
     private void load_forum() {
-        new Thread(() -> {
-            Log.d("API", "Loading Forum");
-            ForumLoader.Reload(99999, 1);
-
-            ActivityCentral.this.runOnUiThread(() -> {
-                lv.setAdapter(new ForumAdapter(ActivityCentral.this, ForumLoader.Asks));
-            });
-        }).start();
+        Log.d("API", "Loading Forum");
+        ForumLoader.Reload(99999, 1);
     }
 
     private void refreshButtonsColor() {
@@ -114,6 +110,15 @@ public class ActivityCentral extends AppCompatActivity {
                 btnDiscuss.setBackgroundColor(getColor(R.color.black2));
                 btnPeople.setBackgroundColor(getColor(R.color.black));
                 break;
+        }
+    }
+
+    @Override
+    public void updForum() {
+        if (currentMode == Mode.Discuss) {
+            this.runOnUiThread(() -> {
+                lv.setAdapter(new ForumAdapter(ActivityCentral.this, ForumLoader.Asks));
+            });
         }
     }
 }

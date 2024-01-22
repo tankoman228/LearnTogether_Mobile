@@ -28,8 +28,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class NotificationService extends Service {
-    private Handler mHandler;
-    private Runnable mRunnable;
+    private static Handler mHandler;
+    private static Runnable mRunnable;
 
 
     public static volatile boolean ConnectionSuccess = false, ResultAwaited = false;

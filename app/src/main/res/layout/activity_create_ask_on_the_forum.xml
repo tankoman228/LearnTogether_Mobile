@@ -16,29 +16,58 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:backgroundTint="@color/blue"
+                android:text="Cancel"
+                android:textSize="14sp" />
+
             <EditText
-                android:id="@+id/editTextText"
+                android:id="@+id/etHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10sp"
                 android:ems="10"
+                android:hint="Question title"
                 android:inputType="text"
                 android:maxLength="150"
-                android:text="Name" />
+                android:textColor="@color/gray"
+                android:textColorHint="@color/blue" />
 
             <EditText
-                android:id="@+id/editTextTextMultiLine2"
+                android:id="@+id/etText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10sp"
                 android:ems="10"
                 android:gravity="start|top"
+                android:hint="Text (please, be brief)"
                 android:inputType="textMultiLine"
-                android:minLines="3" />
+                android:textColor="@color/gray"
+                android:textColorHint="@color/blue" />
 
-            <Button
-                android:id="@+id/button"
+            <EditText
+                android:id="@+id/etTags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:layout_margin="10sp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="Tags list (separate with  &quot; , &quot; )"
+                android:inputType="textMultiLine"
+                android:textColor="@color/gray"
+                android:textColorHint="@color/blue" />
+
+            <Button
+                android:id="@+id/btnAdd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:backgroundTint="@color/blue"
+                android:text="Create ask" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

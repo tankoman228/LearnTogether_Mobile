@@ -55,7 +55,7 @@ public class HttpJsonRequest {
 
         URL url = new URL(serverURL + urlString);
         Log.d("API", "URL: " + url.toString());
-        Log.d("API", "Send: " + json.toString());
+        /*Log.d("API", "Send: " + json.toString());*/
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
@@ -84,7 +84,7 @@ public class HttpJsonRequest {
         conn.disconnect();
 
         String rs = responseBuilder.toString();
-        Log.d("API", rs);
+        //Log.d("API", rs);
 
         // парсим строку JSON в объект JSONObject
         response = new JSONObject(rs);
@@ -130,7 +130,8 @@ public class HttpJsonRequest {
                 }
             });
 
-            ex.awaitTermination(5, TimeUnit.SECONDS);
+            if (!ex.awaitTermination(5, TimeUnit.SECONDS))
+                callback.onError(new Exception("Response timeout"));
             callback.onSuccess(response);
 
         } catch (Exception e) {
