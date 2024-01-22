@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.learntogether.ActivityCentral;
+import com.example.learntogether.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -123,6 +124,9 @@ public class ConnectionManager {
                                     ConnectionManager.accessToken = response.getString("Token");
 
                                     ((AppCompatActivity)context).runOnUiThread(() -> {
+
+                                        MainActivity.setIsLoading(false);
+
                                         context.startForegroundService(new Intent(context, NotificationService.class));
                                         Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
                                         SaveAccountInfo(context);
@@ -131,6 +135,9 @@ public class ConnectionManager {
                                             context.startActivity(new Intent(context, ActivityCentral.class));
                                         });
                                     });
+                                }
+                                else {
+                                    MainActivity.setIsLoading(false);
                                 }
                             }
                             catch (Exception e) { e.printStackTrace(); }

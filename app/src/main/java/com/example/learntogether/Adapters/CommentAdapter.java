@@ -2,6 +2,7 @@ package com.example.learntogether.Adapters;
 
 import java.util.ArrayList;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,10 +52,7 @@ public class CommentAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View view = convertView;
-        if (view == null) {
-            view = lInflater.inflate(R.layout.item_comment, parent, false);
-        }
+        View view = lInflater.inflate(R.layout.item_comment, parent, false);
 
         Comment thisComment = getComment(position);
         if (thisComment.Avatar != null) {
@@ -66,10 +64,11 @@ public class CommentAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.tvDateTime)).setText(thisComment.DateTime);
 
         Button btnAttachment = view.findViewById(R.id.btnAttachment);
-        if (thisComment.Attachment == null) {
+        if (thisComment.Attachment == null || thisComment.Attachment.equals("")) {
             btnAttachment.setVisibility(View.GONE);
         }
         else {
+            Log.d("API", thisComment.Attachment);
             btnAttachment.setOnClickListener(l -> {});
         }
 

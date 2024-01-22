@@ -2,6 +2,7 @@ package com.example.learntogether.Adapters;
 
 import java.util.ArrayList;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +13,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
 import com.example.learntogether.API.ConnectionManager;
+import com.example.learntogether.ActivityCentral;
+import com.example.learntogether.ActivityComments;
 import com.example.learntogether.FromAPI.ForumAsk;
 import com.example.learntogether.R;
 
@@ -72,6 +76,16 @@ public class ForumAdapter extends BaseAdapter {
             ivMenu.setOnClickListener(l -> {
                 showPopupMenu(finalView);
             });
+        else
+            ivMenu.setVisibility(View.INVISIBLE);
+
+        view.findViewById(R.id.ivComments).setOnClickListener(l -> {
+            ((AppCompatActivity)ctx).runOnUiThread(() -> {
+                ActivityComments.infoBase = thisForumAsk;
+                ctx.startActivity(new Intent(ctx, ActivityComments.class));
+            });
+        });
+
 
         return view;
     }

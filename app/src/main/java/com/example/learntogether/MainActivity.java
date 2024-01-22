@@ -71,6 +71,17 @@ public class MainActivity extends AppCompatActivity  {
             return;
         }
 
+        Thread x = new Thread(() -> {
+            if (!ConnectionManager.TryLoadAndConnect(this)) {
+                upd_loading_status("Can\'t continue session.\nTrying to sign up" +
+                        "");
+                Log.d("API", "Auto Login!");
+                ConnectionManager.TryLogin(this);
+                setIsLoading(false);
+            }
+        });
+        x.start();
+
         tvStatus = findViewById(R.id.tvStatus);
         progressBar = findViewById(R.id.progressBar);
         btnLogin = findViewById(R.id.btnGoEnter);
@@ -88,17 +99,10 @@ public class MainActivity extends AppCompatActivity  {
         btnCancel.setOnClickListener(l -> {
             setIsLoading(false);
             stopService(new Intent(this, NotificationService.class));
+            x.interrupt();
         });
 
-        new Thread(() -> {
-            if (!ConnectionManager.TryLoadAndConnect(this)) {
-                upd_loading_status("Can\'t continue session.\nTrying to sign up" +
-                        "");
-                Log.d("API", "Auto Login!");
-                ConnectionManager.TryLogin(this);
-                setIsLoading(false);
-            }
-        }).start();
+
 
         new Thread(() -> {
             float a = 2f;
