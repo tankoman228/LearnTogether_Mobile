@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityProfile"
+    android:background="@color/black2">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvDisplayedName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Отображаемое имя"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/ibAvatar"
+                    app:layout_constraintTop_toBottomOf="@+id/ibAvatar" />
+
+                <TextView
+                    android:id="@+id/tvProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Профиль"
+                    android:textColor="@color/white"
+                    android:textSize="35sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnReturnBack"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btnReturnBack"
+                    app:layout_constraintTop_toTopOf="@+id/btnReturnBack" />
+
+                <TextView
+                    android:id="@+id/tvРуру"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="О себе:"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="@+id/etNameDisplayed"
+                    app:layout_constraintStart_toStartOf="@+id/etNameDisplayed"
+                    app:layout_constraintTop_toBottomOf="@+id/etNameDisplayed" />
+
+                <Button
+                    android:id="@+id/btnReturnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Назад"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etNameDisplayed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/white"
+                    android:ems="10"
+                    android:hint="Имя не может быть пустым!"
+                    android:inputType="text"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/red"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="@+id/tvDisplayedName"
+                    app:layout_constraintStart_toStartOf="@+id/tvDisplayedName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDisplayedName" />
+
+                <ImageButton
+                    android:id="@+id/ibAvatar"
+                    android:layout_width="200sp"
+                    android:layout_height="200sp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/black2"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnReturnBack"
+                    app:srcCompat="@android:drawable/sym_def_app_icon" />
+
+                <TextView
+                    android:id="@+id/tvInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="info"
+                    android:textColor="@color/blue"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/ibAvatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ibAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/ibAvatar" />
+
+                <EditText
+                    android:id="@+id/etDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="180sp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/black"
+                    android:backgroundTint="@color/black"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="@+id/tvРуру"
+                    app:layout_constraintStart_toStartOf="@+id/tvРуру"
+                    app:layout_constraintTop_toBottomOf="@+id/tvРуру" />
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Сохранить изменения"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="@+id/etDescription"
+                    app:layout_constraintStart_toStartOf="@+id/etDescription"
+                    app:layout_constraintTop_toBottomOf="@+id/etDescription" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
