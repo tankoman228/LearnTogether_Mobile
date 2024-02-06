@@ -5,12 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.learntogether.API.ForumLoader;
-import com.example.learntogether.Adapters.ForumAdapter;
+import com.example.learntogether.Adapters.AdapterForum;
 import com.example.learntogether.SubActivity.CreateAskOnTheForum;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -117,7 +116,7 @@ public class ActivityCentral extends AppCompatActivity implements ActivityCentra
     public void updForum() {
         if (currentMode == Mode.Discuss) {
             this.runOnUiThread(() -> {
-                lv.setAdapter(new ForumAdapter(ActivityCentral.this, ForumLoader.Asks));
+                lv.setAdapter(new AdapterForum(ActivityCentral.this, ForumLoader.Asks));
             });
         }
     }

@@ -4,32 +4,28 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
 import com.example.learntogether.API.ConnectionManager;
-import com.example.learntogether.ActivityCentral;
 import com.example.learntogether.ActivityComments;
 import com.example.learntogether.FromAPI.ForumAsk;
 import com.example.learntogether.R;
 
-public class ForumAdapter extends BaseAdapter {
+public class AdapterForum extends BaseAdapter {
     Context ctx;
     LayoutInflater lInflater;
 
     private ArrayList<ForumAsk> objects;
 
 
-    public  ForumAdapter(Context context, ArrayList<ForumAsk> objList) {
+    public AdapterForum(Context context, ArrayList<ForumAsk> objList) {
         ctx = context;
         objects = objList;
 

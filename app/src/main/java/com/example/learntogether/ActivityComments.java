@@ -6,37 +6,26 @@ import android.os.Bundle;
 
 import com.example.learntogether.API.ConnectionManager;
 import com.example.learntogether.API.HttpJsonRequest;
-import com.example.learntogether.Adapters.CommentAdapter;
+import com.example.learntogether.Adapters.AdapterComment;
 import com.example.learntogether.FromAPI.Comment;
-import com.example.learntogether.FromAPI.ForumAsk;
 import com.example.learntogether.FromAPI.InfoBase;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.WindowCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.learntogether.databinding.ActivityCommentsBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class ActivityComments extends AppCompatActivity {
 
@@ -161,7 +150,7 @@ public class ActivityComments extends AppCompatActivity {
                     }
 
                     ActivityComments.this.runOnUiThread(() -> {
-                        lv.setAdapter(new CommentAdapter(ActivityComments.this, comments_list));
+                        lv.setAdapter(new AdapterComment(ActivityComments.this, comments_list));
                     });
                 }
                 catch (Exception e) {

@@ -29,16 +29,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvGroup"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:clickable="true"
-            android:text="-Group Name-"
-            android:textColor="@color/gray"
+            android:hint="Выполнить поиск"
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ibSearch"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,7 +71,7 @@
             app:layout_constraintTop_toTopOf="@+id/btnProfile" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/ibSearch"
             android:layout_width="50sp"
             android:layout_height="50sp"
             android:backgroundTint="@color/black2"

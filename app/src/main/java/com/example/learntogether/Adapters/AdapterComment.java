@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -19,14 +18,14 @@ import com.example.learntogether.API.ConnectionManager;
 import com.example.learntogether.FromAPI.Comment;
 import com.example.learntogether.R;
 
-public class CommentAdapter extends BaseAdapter {
+public class AdapterComment extends BaseAdapter {
     Context ctx;
     LayoutInflater lInflater;
 
     private ArrayList<Comment> objects;
 
 
-    public CommentAdapter(Context context, ArrayList<Comment> objList) {
+    public AdapterComment(Context context, ArrayList<Comment> objList) {
         ctx = context;
         objects = objList;
 
