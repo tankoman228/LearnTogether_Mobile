@@ -58,6 +58,7 @@ public class ConnectionManager {
             accessToken = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getString("accessToken", null);
             ID_Account = context.getSharedPreferences("Account", Context.MODE_PRIVATE).getInt("ID_Account", -1);
 
+            MainActivity.upd_loading_status("Connecting to server");
             if (!HttpJsonRequest.try_init(server_ip + ":" + server_port)) {
                 if (MainActivity.THIS != null)
                     MainActivity.THIS.runOnUiThread(() ->

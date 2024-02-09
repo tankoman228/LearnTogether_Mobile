@@ -97,7 +97,7 @@ public class NotificationService extends Service {
 
         MainActivity.setIsLoading(true);
 
-        for (int attempts = 1; attempts < 3; attempts++) {
+        for (int attempts = 1; attempts < 100; attempts++) {
 
             MainActivity.upd_loading_status("Connection trying: attempt " + attempts);
 
@@ -107,7 +107,7 @@ public class NotificationService extends Service {
             Log.d("API", "socketCycle start");
 
             try {
-
+                MainActivity.upd_loading_status("Trying to open socket");
                 mSocket = new Socket(ConnectionManager.server_ip, Integer.parseInt(ConnectionManager.notification_port));
 
                 mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));

@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity  {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,17 +66,18 @@ public class MainActivity extends AppCompatActivity  {
         stopService(new Intent(this, NotificationService.class));
 
         THIS = this;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 10);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 10);
+            }
             return;
         }
 
         Thread x = new Thread(() -> {
-            if (!ConnectionManager.TryLoadAndConnect(this)) {
-                upd_loading_status("Can\'t continue session.\nTrying to sign up");
-                setIsLoading(false);
-            }
+            setIsLoading(true);
+            ConnectionManager.TryLoadAndConnect(this);
+            setIsLoading(false);
         });
         x.start();
 
@@ -96,9 +96,11 @@ public class MainActivity extends AppCompatActivity  {
             startActivity(i);
         });
         btnCancel.setOnClickListener(l -> {
-            setIsLoading(false);
-            stopService(new Intent(this, NotificationService.class));
-            x.interrupt();
+            new Thread(() -> {
+                setIsLoading(false);
+                stopService(new Intent(this, NotificationService.class));
+                x.interrupt();
+            }).start();
         });
 
 
